@@ -1,0 +1,10 @@
+{
+  "editor.quickSuggestions": {
+    "other": "on",
+    "comments": "off",
+    "strings": "on"
+  },
+  "rust-analyzer.linkedProjects": [
+    "aiwork-summary/src-tauri/Cargo.toml"
+  ]
+}
