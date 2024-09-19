@@ -1,19 +1,18 @@
 {
+  "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
     "beforeBuildCommand": "bun run build",
     "beforeDevCommand": "bun run dev",
     "devPath": "http://localhost:3000",
-    "distDir": "../out"
+    "distDir": "../.next"
   },
   "package": {
-    "productName": "aiwork-summary",
+    "productName": "my-app",
     "version": "0.1.0"
   },
   "tauri": {
     "allowlist": {
-      "dialog":{
-        "all": true
-      }
+      "all": false
     },
     "bundle": {
       "active": true,
@@ -59,7 +58,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "aiwork-summary",
+        "title": "my-app",
         "width": 800
       }
     ]

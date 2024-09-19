@@ -5,6 +5,6 @@
     "strings": "on"
   },
   "rust-analyzer.linkedProjects": [
-    "aiwork-summary/src-tauri/Cargo.toml"
+    "my-app/src-tauri/Cargo.toml"
   ]
 }
