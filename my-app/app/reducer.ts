@@ -4,7 +4,7 @@ type Action =
   | { type: 'deleate', index: number}
   | { type: 'reset'}
 
-export const initialState = null;
+export const initialState = [];
 
 export const reducer = (state: null | string[], action: Action) => {
   switch (action.type) {
