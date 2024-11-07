@@ -5,6 +5,7 @@ import { useReducer, useState } from "react";
 import { invoke } from '@tauri-apps/api/tauri';
 import { initialState, reducer } from "./reducer";
 import BaseSwitch from "./Switch";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function Home() {
   const [filePath, setFilePath] = useState<string | null>(null);
@@ -12,6 +13,7 @@ export default function Home() {
   const [hasError, setHasError] = useState<boolean>(false);
   const [inputText, setInputText] = useState<string>('');
   const [isHeadless, setIsHeadless] = useState<boolean>(false);
+  const [isRunning, setIsRunning] = useState<boolean>(false);
 
   const handleFileSelect = async () => {
     try {
@@ -31,11 +33,13 @@ export default function Home() {
 
   const handleFileOutput = async () => {
     try {
+      setIsRunning(true);
       await invoke('scraper', { storeNames: storeNames, headless: !isHeadless });
       dispatch({'type': 'reset'});
     } catch (error) {
       console.error(error)
     }
+    setIsRunning(false);
   }
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,20 +83,30 @@ export default function Home() {
           </li>
           <li>wait for a minute...</li>
         </ol>
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <button
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 min-w-44"
-            onClick={handleFileSelect}
-          >
-            upload file
-          </button>
-          <button
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 min-w-44"
-            onClick={handleFileOutput}
-          >
-            get Data 
-          </button>
-        </div>
+        {isRunning ?
+          <div className="flex flex-col justify-center items-center">
+            <ThreeDots
+            color="#383838"
+            />
+            <text className="text-2xl animate-pulse">Scraping... wait for a minute</text>
+          </div> :
+          <div className="flex gap-4 items-center flex-col sm:flex-row">
+            <button
+              className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 min-w-44"
+              onClick={handleFileSelect}
+              disabled={isRunning}
+            >
+              upload file
+            </button>
+            <button
+              className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 min-w-44"
+              onClick={handleFileOutput}
+              disabled={isRunning}
+            >
+              get Data
+            </button>
+          </div>
+        }
         <div className="max-w-md mx-auto p-2">
           <div className="flex flex-col sm:flex-row gap-6">
             <input
@@ -101,13 +115,13 @@ export default function Home() {
               className="flex-grow px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out"
               aria-label="個別店舗入力"
               value={inputText}
-              onChange={handleInput}   
+              onChange={handleInput}
             />
             <button
               type='button'
               className="px-6 py-2 text-white bg-gray-600 rounded-full hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-200 ease-in-out"
               onClick={handleClickAddButton}
-              disabled={inputText.length === 0}
+              disabled={inputText.length === 0 || isRunning}
             >
               add
             </button>
